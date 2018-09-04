@@ -1,0 +1,427 @@
+\documentclass[11pt]{article}
+\usepackage[margin=2cm, footskip=72pt]{geometry} 
+\usepackage{outline}
+\usepackage{pmgraph}
+\usepackage[normalem]{ulem}
+\usepackage[none]{hyphenat}
+\usepackage{nopageno}
+\usepackage[version=3]{mhchem}
+\usepackage{graphicx}
+\usepackage{mathpazo}
+\usepackage{lineno}
+\usepackage{indentfirst}
+\usepackage{hyperref}
+\usepackage{subcaption}
+\usepackage{float}
+\usepackage[table]{xcolor}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{natbib}
+
+\title{\textbf{Social Network Structure in a Population of Wild House Sparrows\\ \bigskip \large Miniproject\\ Computational Methods in Ecology \& Evolution\\ Department of Live Sciences, Imperial College London\\ \bigskip Word count: 3479}}
+\author{Student: Alexander Flynn-Carroll (a.flynn-carroll17@imperial.ac.uk)}
+\date{09 March 2018}
+
+
+%--------------------Line spacing
+\linespread{1.45}
+%--------------------Indention
+\setlength{\parindent}{0.5cm}
+
+\begin{document}
+%--------------------Title Page
+\begin{titlepage}
+\maketitle
+\end{titlepage}
+
+%--------------------Introduction
+\linenumbers
+\pagestyle{headings}
+\setcounter{page}{1}
+
+\section{Introduction}
+\par Group membership is an important aspect of life for many organisms.  By living in a group, individuals gain protection from predators, access to potential mating partners, and the ability to better find food \citep{ETH:ETH922}⁠.  This communal living is not without its downsides.  Competition within the group, increased resource requirement, and the risk of inbreeding can all negatively impact individuals in this environment.   Bonds between individuals become important in order to avoid conflict and ensure access to resources  \citep{Clutton-Brock2009}.
+\par The summation of social interactions between individuals can be visualized in terms of a network of nodes and their connections.  The individuals in a population are represented by the nodes of the plot with the connections, represented as edges, constructed from the social interactions between the individuals \citep{WEY2008333}⁠.  These connections can originate from different types of social interaction, such as grooming behaviours, cooperative events, or antagonistic interactions \citep{KULAHCI2018217}⁠.  The weight of these edges can be made to represent the number of interactions between individuals or the weight that those interactions took, reflecting duration, for example.  
+\par Communities within networks are defined as clusters of individuals with higher degree of connectedness between each other than with those outside the group \citep{Newman2003}⁠.  These clusters range from the highly sorted modular network, where there are a number of unconnected communities, to a randomly mixed population where there are no community subsets \citep{SHIZUKA2016237}⁠.  It is important to identify these clusters in order to understand the structure of the network.  
+\par House sparrows are gregarious animals, who often liven in large groups \citep{Hoi2011}⁠.  Research has shown that sparrows display unique patterns of behaviour through time, or personalities \citep{Winney2017}⁠.  These personalities could play a part of an adaptive strategy for survival \citep{Dall2004}⁠.  Studies on golden-crowned sparrows have shown that social communities are very stable across years, with sparrows preferring to associate with the same individuals within the flock \citep{Arnberg2015}⁠.  This pattern has been shown to be due more to social preferences than it is to spatial preferences.   By recording interactions between individuals, we will be able to build our own social networks and begin to understand the social structure that underlies a wild population of European house sparrows.
+\par For this study, I propose to identify any underlying social communities within the population of house sparrows on Lundy Island.  The sample population for this study has been closely monitored since the year 2000 \citep{Nakagawa2007}⁠.  Members of the population are caught and ringed annually with blood samples drawn and size measurements documented.  Recapture and re-sightings are likely, as the Island is only 445ha in area and 48km from the mainland \citep{DBIRDS}.   In addition, most of the population has previously been captured and tagged, most interacting individuals on the island are identifiable.
+\par  Using data gathered over the course of three years, this analysis will create social networks from the recorded social interactions at a food source.  Beginning in December 2016, 10 sampling events of 2 days each were conducted, alternating one non-breeding season trip and two breeding season trips.  Videos were taken of the interacting sparrows at the feeder and analysed after the fact to identify interaction type.  The time series will allow identification of patterns in the sparrow social network and if those patterns vary seasonally and annually.\\  
+
+%--------------------Methods
+\section{Methods}
+\par The data were taken from an existing dataset created from the study of dominance hierarchies in the Lundy House Sparrows \citep{SANCHEZ18}.  A video camera was placed to monitor a single feeder.  The feeder was placed on a table in the same location for each sampling event throughout the study and was refilled as needed with sunflower seeds.  The feeder was a single bowl with dimensions of 15.5cm in diameter and 6.0cm in height.  A mesh was laid across the food to reduce spillage and thus increase competition over the food.   A mean of 5h of video data between 05:16 am and 17:55pm was analysed every day of the study.  There were a total of 7 sampling events between November 2013 and December 2016, reflecting 20 days of observations.  Measurements were taken in both the breeding and non-breeding seasons.  For the non-breeding season, 2 consecutive days of data were analysed.  In the breeding season, 2 sets of 2 consecutive days of data were analysed, as the density of recorded interactions was lower during breeding season.  
+\par  Interactions occurring at the feeder were identified from the video.  The type of interaction was subset by increasing severity into displacement, threats, pecks, and fights.  The identities of the two individuals involved in each interaction were determined from a set of unique colour rings attached to their legs.  The winner, loser, time of interaction, and sex of the birds were recorded as well.  The loser was identified as the individual who exhibited signs of submissive behaviour or retreated from the interaction.  Any individual who was recorded fewer than three times per recording event was confirmed through re-analysis in order to reduce the number of misidentifications in the data \citep{SANCHEZ18}.  
+
+\subsection{Computing Languages}
+	
+\par Linux shell script was used to run all code files throughout the analysis.  As you can run other languages through bash script, it facilitated the analyses in Python and R, as well as triggering the creation of the \LaTeX{} file.  Python could also have been used for this purpose, but python has many built in functions and capabilities that made it more suited for working with the data.
+\par Python was used to clean and format the data.  In particular, the Pandas library was also used for working with data tables and time series.  Two files were read into the environment; one file for the interaction data between sparrows, and another list of known bird ID’s with their corresponding identification codes.   After reformatting the ID codes to match between the files, the ID file was used to eliminate any identification codes that did not correspond with a known member of the population.  These were either a misidentification, or in rare cases, an individual from another population outside of Lundy.  Individuals without an identification and their corresponding interactions were also removed from the data set.  The date was formatted and put into the Pandas date-time format.  Finally a column for trip identification was added in order to more easily analyse the differences between trips in R.  A $.CSV$ file was saved with the remaining interaction data to be read in R.
+\par R was used for the analysis and plotting of the social networks.  R is ideal for plotting data, and the R library igraph has a number of built in algorithms that make network analysis easier \citep{R}.  In order to plot the data R functions were run, which produced the statistics needed to analyse the data.  Since all of the data needed to compare models was included, no additional analysis in Python were required.  To plot the various network groupings, three built in functions of igraph were used; cluster\_louvian(), cluster\_fast\_greedy(), and cluster\_edge\_betweenness().  These functions identified the various communities within the sparrow social networks which were used to plot the network cluster maps.  Several statistical analyses were used to generate a table in order to analyse the various model parameters.  The following values were saved from the network models; modularity, density, average degree, and the cluster coefficient.  Modularity allowed for the comparison of different models of network clustering produced at the various time scales, by sampling event and by day.  
+
+\subsection{Comparing Models}
+
+\par The modularity value was used to compare the different models of network clustering with one another.  Modularity is a measure of the structure of the network calculated by taking the fraction of total edges that connect vertices, individual sparrows in this case, within the proposed group and subtracting the proportion of edges that would be present in the same subset of a randomly connected network\citep{Newman2003}⁠.  This can produce a range of possible values from 0 to 1, with 0 indicating weak community structure and 1 indicating strong structure.  A modularity value greater than 0.3 is seen to be a significant measure of structure, with values typically ranging between 0.3 and 0.7 \citep{Newman2003}⁠.  
+\par To understand this mathematically, a given network is divided into $k$ communities.  A matrix of $k\times k$ is defined as $e$, with $e_{ij}$ being the fraction of all edges that link vertices in community $i$ to community $j$  The sum of rows or columns in the matrix is defined as $a_{i}=\sum_{j}e_{ij}$, which is the fraction of edges that connect to vertices in community $i$.  Modularity, $Q$, becomes:
+
+	
+    \begin{equation}
+    Q=\sum_{i}\left(e_{ii}-a_{i}^{2}\right)
+    \end{equation}\\
+    
+ 
+\subsection{The Algorithms}
+
+\par Edge betweenness is determined by calculating a betweenness score for all of the edges within a network \citep{Newman2003}⁠.   Betweenness is a measurement of centrality in the network based on shortest paths.  The number of shortest paths created between vertices that pass through a given edge assigns that edge its betweenness value.  Communities, by definition, are less densely connected outside of themselves than within, so edges connecting these communities will more often be used in these shortest paths and thus have a higher value of betweenness.  The model finds the edge with the highest score and removes it from the network.  It does this by finding the number of shortest paths that go through a given edge for every pair of points in the matrix.  By doing this for every edge in the network, it can sum the betweenness weight for each edge.  This value is used to remove the edge with the highest betweenness value.  The algorithm then recalculates the betweenness scores for the entire network and repeats the removal process.  This creates a hierarchical map called a dendrogram of the graph \citep{IGRAPH}.  This is a resource intensive calculation, with the total time for calculation equalling $O(m^2n)$ where $O$ is a standard computing constant representing the worst case for the amount of time or memory an algorithm requires to run, $m$ is the number edges and $n$ is the vertices \citep{Newman2003}. This makes it impractical for larger networks.      
+\par The Greedy algorithm operates by attempting to maximise modularity at every step of the function \citep{Clauset2004}⁠.  It begins with all nodes representing their own communities.  It merges nodes when it produces a gain in modularity.  Greedy continues this operation until it is no longer possible to create a gain in modularity.  It is much less computationally heavy than the edge-betweenness model and it is thus much faster.  It does have difficulty identifying communities smaller than its resolution limit, often creating “super communities” \citep{Blondel2008}⁠.  
+$A_{vw}$ is 1 if vertices are connected and 0 if not.  The degree of a vertex $V$ is defined as $k_{v}$ or:
+
+
+    \begin{equation}
+    k_{v}=\sum_{w}A_{vw}
+    \end{equation}
+    
+The vertex degree is then represented as $\frac{k_{v}k_{w}}{2m}$ with $m$ again being the number of vertices.  Modularity is defined as $Q$.
+
+
+    \begin{equation}
+    Q=\frac{1}{2m}\left[A_{vw}-\frac{k_{v}k_{w}}{2m}\right]\delta\left(c_{v},c_{w}\right)
+    \end{equation}
+
+$c_{v}$ and $c_{w}$ are the different communities present.  The time it takes this model to run is $O\left(m\log^2n\right)$, which is a significant advantage over the edge betweenness algorithm.
+
+\par The Louvain algorithm proceeds in the same way as the Greedy algorithm in that it tries to maximise modularity at every step of the algorithm \citep{Blondel2008}⁠.  It has two phases that are repeated iteratively starting with the assumption of a weighted network with $N$ nodes.  First, each node in the network is given its own community.  Next, each neighbour $j$ of node $i$ is considered to see if there would be a gain in modularity by removing $i$ from its own network and assigning it to the network of $j$.  $i$ is assigned to the network for which there is the maximum gain in modularity, only if this gain is positive.  If there is no possibility for an increase in modularity, $i$ remains in its original network.  This phase is completed when all of the nodes in the network are considered, often multiple times.  Phase two takes all of the communities created in phase one and transforming them into nodes with the same weights as given to the vertices in phase one.  After this, phase one repeats, on these new nodes and continued until there can be no more increases in modularity.  
+
+\par The speed of the model is derived from the ease of computation of an increase in modularity resulting from the combination of vertices into communities.  The following calculation is used for the algorithm:
+
+    \begin{equation}
+    \Delta Q=\left[\frac{\sum_{in}+k_{i,in}}{2m}- \left(\frac{\sum_{tot}+k_{i}}{2m}\right)^2	\right]-\left[\frac{\sum_{in}}{2m}-\left(\frac{sum_{tot}}{2m}\right)^2-\left(\frac{k_{i}}{2m}\right)^2\right]
+    \end{equation}
+    
+$\sum_{in}$ is the sum of the weights of edges of the links inside community $C$.  $\sum_{tot}$ is the sum of the weights of edges incident to $C$.  $k_{i}$ is the sum of weights of edges from $i$ to node $C$ and $m$ is the sum of the weights of all the links in the network.  
+\\
+
+%--------------------Results
+\section{Results}
+
+\par The density of a social network is a measurement of how interconnected the nodes are with one another \citep{ALLGAYER2017}.  It is calculated by dividing the number of realized connections in a network by the number of possible connections in that network \citep{WEY2008333}⁠.  For our purposes, it is looking at how closely one individual is connected to others within the network.  Networks were created for each of the sampled days, as well as for each of the sampling trips run to Lundy.  The average density value for each of the sampled days was 0.121, see Table 1.  For the sampling trips, the average density was 0.151.  4 Sampling trips were conducted in the winter and 3 in the summer.  The average density among the winter sampling events was 0.126 and 0.081 for the summer.  This shows a less densely connected network in the summer time as opposed to the winter.
+
+\begin{table}[H]
+	\centering\rowcolors{2}{gray!6}{white}
+	\caption{Network statistics for the averages networks at the three time scales of analysis.}
+	\begin{tabular}{llllll}
+		\hiderowcolors
+		\toprule
+		\rotatebox{0}{Timescale} & \rotatebox{0}{Nodes} & \rotatebox{0}{Edges} & \rotatebox{0}{Density} & \rotatebox{0}{Average.Degree} & \rotatebox{0}{Cluster.Coefficient}\\
+		\midrule
+		\showrowcolors
+		Day & 84.75 & 452.5 & 0.121 & 9.823 & 0.283\\
+		Trip & 130 & 1153.71428571429 & 0.150 & 17.618 & 0.389\\
+		Total & 514 & 7346 & 0.056 & 28.584 & 0.335\\
+		\bottomrule
+	\end{tabular}
+	\rowcolors{2}{white}{white}
+	
+	
+	\label{Fig:Data1}
+\end{table}
+
+\par Three models were run on the networks in order to find groups within the network, see Figure 1 for example outputs.  Edge Betweenness, Greedy, and Louvain models were used for this analysis.  The modularity value was taken from the output of each algorithm and compared to assess significance.  A value of greater than 0.3 is considered significant \citep{Newman2003}⁠.  6 days out of 20 showed significant modularity in the Greedy and Louvain models, while only 5 of those showed significance in the Edge Betweenness model, see the Appendix for full data ouputs.  In the networks created from the trip groups, none of the networks showed significant modularity.  
+
+\begin{table}[H]
+	\centering\rowcolors{2}{gray!6}{white}
+	\caption{Mean modularity and group values for the different algorithms by timescale.}
+	\begin{tabular}{llll}
+		\hiderowcolors
+		\toprule
+		\rotatebox{0}{Timescale} & \rotatebox{0}{Algorithm} & \rotatebox{0}{Modularity} & \rotatebox{0}{Groups}\\
+		\midrule
+		\showrowcolors
+		Day & Edge Betweenness Cluster & 0.115 & 39.200\\
+		& Greedy Cluster & 0.286 & 5.950\\
+		& Louvain Cluster & 0.286 & 5.800\\
+		Trip & Edge Betweenness Cluster & 0.011 & 77.714\\
+		& Greedy Cluster & 0.168 & 5.857\\
+		\addlinespace
+		& Louvain Cluster & 0.174 & 6.143\\
+		Total & Edge Betweenness Cluster & 0.227 & 163.000\\
+		& Greedy Cluster & 0.391 & 3.000\\
+		& Louvain Cluster & 0.388 & 4.000\\
+		\bottomrule
+	\end{tabular}
+	\rowcolors{2}{white}{white}
+	
+	\label{Fig:Data2}
+\end{table}
+
+\begin{figure}[H]
+\begin{subfigure}{0.32\textwidth}
+\includegraphics[width=0.9\linewidth, height=5cm]{../Results/louvain_2014-03-15.pdf} 
+\caption{Edge-Betweenness 2014-03-15}
+\label{fig:subim1}
+\end{subfigure}
+\begin{subfigure}{0.32\textwidth}
+\includegraphics[width=0.9\linewidth, height=5cm]{../Results/greedy_2014-03-15.pdf}
+\caption{Greedy 2014-03-15}
+\label{fig:subim2}
+\end{subfigure}
+\begin{subfigure}{0.32\textwidth}
+\includegraphics[width=0.9\linewidth, height=5cm]{../Results/edge_betw_2014-03-15.pdf}
+\caption{Louvain 2014-03-15}
+\label{fig:subim3}
+\end{subfigure}
+ \begin{subfigure}{0.32\textwidth}
+\includegraphics[width=0.9\linewidth, height=5cm]{../Results/edge_betw_trip_2.pdf} 
+\caption{Edge-Betweenness on Trip 2}
+\label{fig:subim4}
+\end{subfigure}
+\begin{subfigure}{0.32\textwidth}
+\includegraphics[width=0.9\linewidth, height=5cm]{../Results/greedy_trip_2.pdf}
+\caption{Greedy on Trip 2}
+\label{fig:subim5}
+\end{subfigure}
+\begin{subfigure}{0.32\textwidth}
+\includegraphics[width=0.9\linewidth, height=5cm]{../Results/louvain_trip_2.pdf}
+\caption{Louvain on Trip 2}
+\label{fig:subim6}
+\end{subfigure}
+\label{fig:image7}
+\begin{subfigure}{0.32\textwidth}
+\includegraphics[width=0.9\linewidth, height=5cm]{../Results/edge_betw_total.pdf} 
+\caption{Edge-Betweenness Total}
+\label{fig:subim8}
+\end{subfigure}
+\begin{subfigure}{0.32\textwidth}
+\includegraphics[width=0.9\linewidth, height=5cm]{../Results/fast_greedy_total.pdf}
+\caption{Greedy Total}
+\label{fig:subim9}
+\end{subfigure}
+\begin{subfigure}{0.32\textwidth}
+\includegraphics[width=0.9\linewidth, height=5cm]{../Results/louvain_total.pdf}
+\caption{Louvain Total}
+\label{fig:subim10}
+\end{subfigure}
+\caption{Example Networks for all 3 algorithms at the 3 time levels.  (a)-(c) are daily networks, (d)-(f) are trip networks, and (g)-(i) are the total networks.  The Day time point is included in the sample window covered by the trip plots.}
+\end{figure}
+
+\newpage
+
+\par The data was also run together to create one large network.  The density of this total network was 0.056, see Table 1.  The same algorithms were used to assess the modularity of the network.  The Edge Betweenness algorithm yielded 163 groups with a modularity value of 0.23, See Table 2.  The greedy algorithm produced 3 groups with a modularity value of 0.39, and the Louvain algorithm produced 4 groups also with a modularity value of 0.39.
+\par The number of communities decreased as the time-scale of analysis increased.  There are more communities on individual days compared with the total community, if the Edge Betweenness model is disregarded.  The density of the network also decreased over time.  Modularity was least when the network was analysed at the trip level.  A number of the networks displayed significant modularity on the day level, and the network as a whole had significant modularity in two of the three algorithms run.  
+\\
+
+%--------------------Discussion
+\section{Discussion}
+\par From the data, it does not seem that the recorded social networks displayed a significant degree of modularity.  The fact that only some of the days showed networks with significant modularity suggests that it was more due to random chance than it was to an actual grouping in the network.  The trip level was the level of analysis that would have provided the most robust evidence for social groupings, as there was more time for a significant number of individuals in the area to visit the feeder.  Here, we observed no significant modularity.  There was again significant values for modularity on the level of the total population for two of the three models run.  This may not be due to social bonds within the network.  Few individuals in wild populations live to breed more than two seasons with the oldest recorded wild sparrows being a pair of males 13 years and 4 months old \citep{Anderson2007}. It is possible that the modularity is an artefact of the population structure and the fact that many individuals present in the first year were not alive in the last, and vice versa.  
+\par From the three models, the Louvain algorithm provided the most consistently significant results for modularity, followed by the Greedy algorithm.  The Louvain models does a better job identifying smaller communities that may be below the resolution size of the Greedy model \citep{Blondel2008}⁠.  This was seen in the increased number of social groups identified in the plots at two of the three time levels.  The edge betweenness model performed generally poorer than the other two.  In many of the networks, it identified communities of predominantly one individual.  The total network yielded 163 groups for the network.  It was also significantly slower than the other two algorithms. 
+\par Although there were not many significant findings from this analysis, it did provide useful information.  The data was taken from one location on the island.  This could have led to a bias of which individuals from the total island population and with what frequency were being recorded.  By recording at multiple locations, we could potentially bring other individuals into the analysis. This would help to answer if we were in fact seeing a representation of the whole population, or a group within the total population.  Our sample population may turn out to be one group within the larger network.
+\par A larger sample window would have also allowed for repeated interactions between individuals.  This would have helped to observe more strength to potential social bonds and weed out chance encounters that would a skewing effect in the absence of more data.  More sampling trips would have also allowed for a finer scale look at whether individual’s social ties were repeatable and whether networks endured through the seasons.  As none of the sampling trip networks were significantly modular, no significant analysis on seasonal repeatability was feasible.  
+\par The data was only taken from interactions around a food source ranging from displacement to fighting.  Studies have shown that networks created from aggressive interactions show the least in common with other networks associated with cooperation and kinship \citep{KULAHCI2018217}.  We may not be getting a clear picture of who chooses to associate with whom as all individuals must feed at some point.  They may be drawn into an aggressive interaction when they normally would have avoided the other recorded individual.  Data from individuals sitting around the outside of the food bowl was not recorded for this experiment.  The sampling time had to be doubled in the breeding season, as fewer individuals approached the food source.  This is presumably due to the availability of a more diverse range of food sources.  Data taken from resting places or nesting grounds might help to illuminate more cooperative bonds.  
+%--------------------References
+
+\newpage
+\section{References:}
+\renewcommand\refname{}
+\bibliographystyle{agsm}
+\bibliography{miniproject}
+
+
+%--------------------Appendix
+
+\newpage
+\section{Appendix}
+\subsection{A}
+
+\centering
+\rowcolors{2}{gray!6}{white}
+
+\begin{longtable}{lllll}
+\hiderowcolors
+\toprule
+\rotatebox{45}{Date} & \rotatebox{45}{Algorithm} & \rotatebox{45}{Modularity} & \rotatebox{45}{Groups}\\
+\midrule
+\showrowcolors
+2013-11-13 & Edge Betweenness Cluster & 0.014 & 50\\
+2013-11-13 & Greedy Cluster & 0.221 & 6\\
+2013-11-13 & Louvain Cluster & 0.219 & 5\\
+2013-11-14 & Edge Betweenness Cluster & 0.073 & 31\\
+2013-11-14 & Greedy Cluster & 0.261 & 4\\
+\addlinespace
+2013-11-14 & Louvain Cluster & 0.259 & 5\\
+2014-03-15 & Edge Betweenness Cluster & 0.231 & 9\\
+2014-03-15 & Greedy Cluster & 0.397 & 5\\
+2014-03-15 & Louvain Cluster & 0.401 & 5\\
+2014-03-16 & Edge Betweenness Cluster & 0.342 & 12\\
+\addlinespace
+2014-03-16 & Greedy Cluster & 0.453 & 7\\
+2014-03-16 & Louvain Cluster & 0.451 & 7\\
+2014-07-08 & Edge Betweenness Cluster & 0.064 & 89\\
+2014-07-08 & Greedy Cluster & 0.238 & 9\\
+2014-07-08 & Louvain Cluster & 0.249 & 7\\
+\addlinespace
+2014-07-09 & Edge Betweenness Cluster & 0.036 & 86\\
+2014-07-09 & Greedy Cluster & 0.234 & 5\\
+2014-07-09 & Louvain Cluster & 0.217 & 5\\
+2015-02-15 & Edge Betweenness Cluster & 0.013 & 50\\
+2015-02-15 & Greedy Cluster & 0.188 & 5\\
+\addlinespace
+2015-02-15 & Louvain Cluster & 0.185 & 5\\
+2015-02-17 & Edge Betweenness Cluster & 0.013 & 95\\
+2015-02-17 & Greedy Cluster & 0.262 & 5\\
+2015-02-17 & Louvain Cluster & 0.250 & 7\\
+2015-05-05 & Edge Betweenness Cluster & 0.294 & 8\\
+\addlinespace
+2015-05-05 & Greedy Cluster & 0.414 & 7\\
+2015-05-05 & Louvain Cluster & 0.405 & 7\\
+2015-05-06 & Edge Betweenness Cluster & 0.300 & 12\\
+2015-05-06 & Greedy Cluster & 0.436 & 7\\
+2015-05-06 & Louvain Cluster & 0.440 & 5\\
+\addlinespace
+2015-06-10 & Edge Betweenness Cluster & 0.024 & 50\\
+2015-06-10 & Greedy Cluster & 0.205 & 5\\
+2015-06-10 & Louvain Cluster & 0.204 & 6\\
+2015-06-11 & Edge Betweenness Cluster & 0.048 & 41\\
+2015-06-11 & Greedy Cluster & 0.225 & 6\\
+\addlinespace
+2015-06-11 & Louvain Cluster & 0.233 & 6\\
+2016-02-17 & Edge Betweenness Cluster & 0.002 & 29\\
+2016-02-17 & Greedy Cluster & 0.146 & 5\\
+2016-02-17 & Louvain Cluster & 0.172 & 4\\
+2016-02-18 & Edge Betweenness Cluster & 0.090 & 15\\
+\addlinespace
+2016-02-18 & Greedy Cluster & 0.300 & 7\\
+2016-02-18 & Louvain Cluster & 0.296 & 7\\
+2016-05-02 & Edge Betweenness Cluster & 0.106 & 17\\
+2016-05-02 & Greedy Cluster & 0.289 & 5\\
+2016-05-02 & Louvain Cluster & 0.293 & 5\\
+\addlinespace
+2016-05-03 & Edge Betweenness Cluster & 0.300 & 12\\
+2016-05-03 & Greedy Cluster & 0.444 & 8\\
+2016-05-03 & Louvain Cluster & 0.437 & 6\\
+2016-05-31 & Edge Betweenness Cluster & 0.315 & 12\\
+2016-05-31 & Greedy Cluster & 0.396 & 5\\
+\addlinespace
+2016-05-31 & Louvain Cluster & 0.411 & 6\\
+2016-06-01 & Edge Betweenness Cluster & 0.016 & 45\\
+2016-06-01 & Greedy Cluster & 0.225 & 6\\
+2016-06-01 & Louvain Cluster & 0.216 & 6\\
+2016-11-26 & Edge Betweenness Cluster & 0.001 & 34\\
+\addlinespace
+2016-11-26 & Greedy Cluster & 0.166 & 6\\
+2016-11-26 & Louvain Cluster & 0.176 & 5\\
+2016-11-27 & Edge Betweenness Cluster & 0.020 & 87\\
+2016-11-27 & Greedy Cluster & 0.219 & 6\\
+2016-11-27 & Louvain Cluster & 0.215 & 7\\
+\bottomrule
+\caption{Modularity and group numbers for each of the daily networks.}
+\end{longtable}
+\rowcolors{2}{white}{white}
+
+\subsection{B}	
+
+
+\begin{table}[H]
+\centering\rowcolors{2}{gray!6}{white}
+
+\begin{tabular}{llllll}
+\hiderowcolors
+\toprule
+\rotatebox{45}{Date} & \rotatebox{45}{Nodes} & \rotatebox{45}{Edges} & \rotatebox{45}{Density} & \rotatebox{45}{Average.Degree} & \rotatebox{45}{Cluster.Coefficient}\\
+\midrule
+\showrowcolors
+2013-11-13 & 80 & 461 & 0.146 & 11.525 & 0.361\\
+2013-11-14 & 77 & 409 & 0.140 & 10.623 & 0.340\\
+2014-03-15 & 38 & 88 & 0.125 & 4.632 & 0.281\\
+2014-03-16 & 49 & 90 & 0.077 & 3.673 & 0.153\\
+2014-07-08 & 143 & 750 & 0.074 & 10.490 & 0.276\\
+\addlinespace
+2014-07-09 & 122 & 718 & 0.097 & 11.770 & 0.314\\
+2015-02-15 & 79 & 568 & 0.184 & 14.380 & 0.360\\
+2015-02-17 & 122 & 926 & 0.125 & 15.180 & 0.236\\
+2015-05-05 & 64 & 164 & 0.081 & 5.125 & 0.160\\
+2015-05-06 & 60 & 140 & 0.079 & 4.667 & 0.171\\
+\addlinespace
+2015-06-10 & 84 & 512 & 0.147 & 12.190 & 0.362\\
+2015-06-11 & 79 & 336 & 0.109 & 8.506 & 0.311\\
+2016-02-17 & 55 & 412 & 0.277 & 14.982 & 0.486\\
+2016-02-18 & 53 & 198 & 0.144 & 7.472 & 0.339\\
+2016-05-02 & 68 & 282 & 0.124 & 8.294 & 0.296\\
+\addlinespace
+2016-05-03 & 77 & 174 & 0.059 & 4.519 & 0.141\\
+2016-05-31 & 72 & 188 & 0.074 & 5.222 & 0.167\\
+2016-06-01 & 110 & 783 & 0.131 & 14.236 & 0.316\\
+2016-11-26 & 110 & 935 & 0.156 & 17.000 & 0.358\\
+2016-11-27 & 153 & 916 & 0.079 & 11.974 & 0.227\\
+
+\bottomrule
+
+\end{tabular}
+\caption{The network statistics for the networks created for each of the days.}
+\rowcolors{2}{white}{white}
+\end{table}
+
+
+\subsection{C}
+\begin{longtable}{llll}
+\hiderowcolors
+\toprule
+\rotatebox{45}{Trip} & \rotatebox{45}{Algorithm} & \rotatebox{45}{Modularity} & \rotatebox{45}{Groups}\\
+\midrule
+\showrowcolors
+1 & Edge Betweenness Cluster & 0.012 & 76\\
+& Greedy Cluster & 0.217 & 5\\
+& Louvain Cluster & 0.209 & 6\\
+2 & Edge Betweenness Cluster & 0.022 & 123\\
+& Greedy Cluster & 0.205 & 6\\
+\addlinespace
+& Louvain Cluster & 0.208 & 6\\
+3 & Edge Betweenness Cluster & 0.023 & 91\\
+& Greedy Cluster & 0.180 & 6\\
+& Louvain Cluster & 0.183 & 7\\
+4 & Edge Betweenness Cluster & 0.007 & 60\\
+\addlinespace
+& Greedy Cluster & 0.161 & 6\\
+& Louvain Cluster & 0.166 & 6\\
+5 & Edge Betweenness Cluster & 0.002 & 32\\
+& Greedy Cluster & 0.104 & 5\\
+& Louvain Cluster & 0.130 & 4\\
+\addlinespace
+6 & Edge Betweenness Cluster & 0.001 & 58\\
+& Greedy Cluster & 0.165 & 7\\
+& Louvain Cluster & 0.181 & 7\\
+7 & Edge Betweenness Cluster & 0.007 & 104\\
+& Greedy Cluster & 0.146 & 6\\
+& Louvain Cluster & 0.142 & 7\\
+\bottomrule
+\caption{Modularity and group values by algorithm for all of trip networks.}
+%%\end{longtable}
+\rowcolors{2}{white}{white}
+
+\end{longtable}
+
+\subsection{D}
+
+\begin{table}[H]
+\centering\rowcolors{2}{gray!6}{white}
+
+\begin{tabular}{rrrrrr}
+\hiderowcolors
+\toprule
+\rotatebox{45}{Trip} & \rotatebox{45}{Nodes} & \rotatebox{45}{Edges} & \rotatebox{45}{Density} & \rotatebox{45}{Average.Degree} & \rotatebox{45}{Cluster.Coefficient}\\
+\midrule
+\showrowcolors
+1 & 113 & 796 & 0.126 & 14.088 & 0.383\\
+2 & 194 & 1515 & 0.081 & 15.619 & 0.319\\
+3 & 128 & 1355 & 0.167 & 21.172 & 0.355\\
+4 & 108 & 938 & 0.162 & 17.370 & 0.426\\
+5 & 64 & 520 & 0.258 & 16.250 & 0.507\\
+\addlinespace
+6 & 136 & 1272 & 0.139 & 18.706 & 0.357\\
+7 & 167 & 1680 & 0.121 & 20.120 & 0.378\\
+\bottomrule
+
+\end{tabular}
+\caption{Network statistics for trip networks.}
+\rowcolors{2}{white}{white}
+\end{table}
+
+\end{document}indentfirst
